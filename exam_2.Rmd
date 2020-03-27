@@ -7,5 +7,71 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+# standard first load
+
+library(tidyverse)
+
+# installing this package and loading the library as instructed worked fine for
+# me!
+
+library(Ecdat)
+
+library(scales)
+
 ```
+
+## Question 1: Ecdat
+
+### 1A)
+
+```{r question_1a, echo=FALSE}
+
+# This r chunk finds the percentage of men in the sample with wives who are
+# neither covered by their husband's health insurance nor have health insurance
+# from their own work, then formats that percentage and assigns it to an object
+# to insert in the mad lib.
+
+# I filter using hhi == "no" and whi == "no", but could just have easily
+# filtered both by using != "yes" to get the same result. I then count the
+# number of rows to get the number of men in the sample who meet these
+# specifications, and divide that by the number of rows in HI to get the
+# percentage of all men in the sample, assigning it to an object because I was
+# unable to pipe the resulting decimal value directly into the round() function
+
+pct_no_hhi_whi <- HI %>% 
+  filter(hhi == "no",
+         whi == "no") %>% 
+  count() %>% 
+  pull(n) / nrow(HI)
+
+# Formatting the decimal value from above by multiplying by 100, then rounding
+# to 2 digits as specified
+
+answer_1a <- round(pct_no_hhi_whi * 100, digits = 2)
+
+```
+
+**`r answer_1a`** percent of men in the sample are married to women who are neither covered by their husband’s insurance (hhi) nor have health insurance from their own work (whi).
+
+### 1B)
+
+Set the seed to 1. Subset the data to black men. We can consider our income data as a single, representative sample of the broader population, which in this case is married black men.
+
+The variable Husby refers to income. Calculate the 90% confidence interval for the mean income, using the percentile method and 1,000 bootstrapped samples. For the bootstramped resampling, draw 1,000 samples with size = 1241 (the number of black respondents) and replace = TRUE. Present your result multiplying by 1000, the units for income.
+The upper bound of this confidence interval is X and the lower bound of this interval is X
+
+
+### 1C)
+
+In one paragraph (max words = 100):
+
+Interpret this confidence interval.
+Explain the difference between the “Bayesian” and “frequentist” interpretation of this confidence interval. You might want to check out the Confidence Intervals section of PPBDS for help.
+
+
+
+### 1D)
+
+Replicate the plot below, which shows the distribution of hours worked by the respondents’ wives based on the total number of children. Note that you’ll need to use both variables about children - one for children under 6 (kidslt6) and one for children 6-18 (kids618). You might want to create a new variable for categories of kids, using case_when. You should set alpha = .4 and use scale_fill_viridis_d() and theme_classic() to make your plot look like ours. You should make your plot identical to ours.
 
