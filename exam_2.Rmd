@@ -130,5 +130,43 @@ We can be 90% confident that the true mean income of married black men in the Un
 
 ### 1D)
 
-Replicate the plot below, which shows the distribution of hours worked by the respondents’ wives based on the total number of children. Note that you’ll need to use both variables about children - one for children under 6 (kidslt6) and one for children 6-18 (kids618). You might want to create a new variable for categories of kids, using case_when. You should set alpha = .4 and use scale_fill_viridis_d() and theme_classic() to make your plot look like ours. You should make your plot identical to ours.
+```{r question_1d, echo=FALSE}
+
+# This r chunk modifies the HI data by adding a column showing the total number
+# of kids per respondent (a factor with values 0, 1, 2, and "3 or more"). It
+# then makes a density plot of hours worked grouped by number of kids
+
+# This is a two-step mutation. First, I add together the columns for kids under
+# 6 and kids 6-18, producing n_kids to show the total number of kids per
+# respondent. Then, I create n_kids_fct, first using case_when to convert values
+# of n_kids >= 3 to the string "3 or more" and setting all other values to
+# characters (e.g. 2 becomes "2"), and then converting all those character
+# strings to factors
+
+HI_new <- HI %>% 
+  mutate(n_kids = kidslt6 + kids618) %>% 
+  mutate(n_kids_fct = as.factor(
+                        case_when(
+                          n_kids >= 3 ~ "3 or more",
+                          TRUE ~ as.character(n_kids))))
+
+# Making the plot was straightforward after the data was properly wrangled.
+# Hours worked (whrswk) goes on the x axis, and n_kids_fct is the fill. I use
+# alpha = 0.4, theme_classic(), and scale_fill_viridis_d() as instructed, adding
+# the name argument to give a title to the legend. Finally, I add a title, axis
+# labels, and caption to the plot, using the exact text from the model plot I'm
+# replicating
+
+HI_new %>% 
+  ggplot(aes(whrswk, fill = n_kids_fct)) +
+  geom_density(alpha = 0.4) +
+  theme_classic() +
+  scale_fill_viridis_d(name = "Kids") +
+  labs(title = "Hours Wife Works A Week",
+       x = "Hours Worked",
+       y = "Density",
+       caption = "Data from Olson (1998)")
+
+```
+
 
