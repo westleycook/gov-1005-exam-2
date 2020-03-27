@@ -369,21 +369,22 @@ summary {
 </div>
 
 
-<div id="question-1-ecdat" class="section level2">
-<h2>Question 1: Ecdat</h2>
+<div id="question-1-wrangling-ecdat" class="section level2">
+<h2>Question 1: Wrangling Ecdat</h2>
 <div id="a" class="section level3">
 <h3>1A)</h3>
-<p><strong>23.62</strong> percent of men in the sample are married to women who are neither covered by their husband’s insurance (hhi) nor have health insurance from their own work (whi).</p>
+<p><strong>23.62</strong> percent of men in the sample are married to women who are neither covered by their husband’s insurance nor have health insurance from their own work.</p>
 </div>
 <div id="b" class="section level3">
 <h3>1B)</h3>
-<p>Set the seed to 1. Subset the data to black men. We can consider our income data as a single, representative sample of the broader population, which in this case is married black men.</p>
-<p>The variable Husby refers to income. Calculate the 90% confidence interval for the mean income, using the percentile method and 1,000 bootstrapped samples. For the bootstramped resampling, draw 1,000 samples with size = 1241 (the number of black respondents) and replace = TRUE. Present your result multiplying by 1000, the units for income. The upper bound of this confidence interval is X and the lower bound of this interval is X</p>
+<p>The upper bound of a 90% confidence interval for the mean income of married black men is <strong>21,488</strong> and the lower bound of this interval is <strong>19,753</strong>.</p>
 </div>
 <div id="c" class="section level3">
 <h3>1C)</h3>
-<p>In one paragraph (max words = 100):</p>
-<p>Interpret this confidence interval. Explain the difference between the “Bayesian” and “frequentist” interpretation of this confidence interval. You might want to check out the Confidence Intervals section of PPBDS for help.</p>
+<p><strong>Bayesian Interpretation</strong> (statement about <em>probability</em>):</p>
+<p>We can be 90% confident that the true mean income of married black men in the United States falls between the upper and lower bounds of this interval; in other words, there is a 90% chance that the interval captures the true population mean.</p>
+<p><strong>Frequentist Interpretation</strong> (statement about <em>the process of creating the interval</em>):</p>
+<p>90% of the time we create an interval using the bootstrap method we used here, the interval will contain the true mean income of married black men in the US. (We hope it did this time, but we’re not sure.)</p>
 </div>
 <div id="d" class="section level3">
 <h3>1D)</h3>

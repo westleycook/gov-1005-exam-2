@@ -13,15 +13,17 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 
 # installing this package and loading the library as instructed worked fine for
-# me!
+# me! Was worried after others had problems, but no problems here
 
 library(Ecdat)
 
-library(scales)
+# loading to use rep_sample_n()
+
+library(infer)
 
 ```
 
-## Question 1: Ecdat
+## Question 1: Wrangling Ecdat
 
 ### 1A)
 
@@ -52,24 +54,79 @@ answer_1a <- round(pct_no_hhi_whi * 100, digits = 2)
 
 ```
 
-**`r answer_1a`** percent of men in the sample are married to women who are neither covered by their husband’s insurance (hhi) nor have health insurance from their own work (whi).
+**`r answer_1a`** percent of men in the sample are married to women who are neither covered by their husband’s insurance nor have health insurance from their own work.
 
 ### 1B)
 
-Set the seed to 1. Subset the data to black men. We can consider our income data as a single, representative sample of the broader population, which in this case is married black men.
+```{r question_1b, echo=FALSE}
 
-The variable Husby refers to income. Calculate the 90% confidence interval for the mean income, using the percentile method and 1,000 bootstrapped samples. For the bootstramped resampling, draw 1,000 samples with size = 1241 (the number of black respondents) and replace = TRUE. Present your result multiplying by 1000, the units for income.
-The upper bound of this confidence interval is X and the lower bound of this interval is X
+# This r chunk sets the seed to 1 (to standardize randomness for easy grading)
+# and creates a 90% confidence interval for the mean income of married black men
+# using 1,000 bootstrapped resamples. It then assigns the nicely-formatted lower and
+# upper bounds each to an object to be inserted in the mad lib.
 
+set.seed(1)
+
+# Subsetting the data for black men; could have used subset() command instead,
+# but this seemed quick and easy
+
+HI_black <- HI %>% 
+  filter(race == "black")
+
+# Using the subset data and rep_sample_n() to take 1,000 bootstrapped resamples.
+# Grouping by replicate and summarizing to find the mean for each sample, then
+# pulling the average income for each sample and using quantile() to find the
+# upper bound of the 90% confidence interval (at the 95th percentile of the
+# distribution of bootstrapped resamples). Assigning the result to an object
+# called upper.
+
+upper <- HI_black %>% 
+  rep_sample_n(size = 1241, reps = 1000, replace = TRUE) %>% 
+  group_by(replicate) %>% 
+  summarize(avg_income = mean(husby)) %>% 
+  pull(avg_income) %>% 
+  quantile(.95)
+
+# Resetting the seed; this is necessary to maintain standardization, since I
+# re-make the distribution of bootstrapped resamples before taking the lower
+# bound
+
+set.seed(1)
+
+# Copied and pasted code from the upper bound calculation, changing just the
+# quantile argument to take the 5th percentile of the distribution of
+# bootstrapped resamples rather than the 95th. Assigning the result to a new
+# object called lower
+
+lower <- HI_black %>% 
+  rep_sample_n(size = 1241, reps = 1000, replace = TRUE) %>% 
+  group_by(replicate) %>% 
+  summarize(avg_income = mean(husby)) %>% 
+  pull(avg_income) %>% 
+  quantile(.05)
+
+# Formatting upper, then lower, by multiplying by 1,000 (the unit for the income
+# variable), displaying it in regular (non-scientific) notation using format =
+# "f", adding a comma, and rounding to 0 digits after the decimal point.
+# Assigning each value to a new object, which I insert in the mad lib
+
+upper_bound <- formatC(upper * 1000, format = "f", big.mark = ",", digits = 0)
+lower_bound <- formatC(lower * 1000, format = "f", big.mark = ",", digits = 0)
+
+```
+
+The upper bound of a 90% confidence interval for the mean income of married black men is
+**`r upper_bound`** and the lower bound of this interval is **`r lower_bound`**.
 
 ### 1C)
 
-In one paragraph (max words = 100):
+**Bayesian Interpretation** (statement about *probability*):
 
-Interpret this confidence interval.
-Explain the difference between the “Bayesian” and “frequentist” interpretation of this confidence interval. You might want to check out the Confidence Intervals section of PPBDS for help.
+We can be 90% confident that the true mean income of married black men in the United States falls between the upper and lower bounds of this interval; in other words, there is a 90% chance that the interval captures the true population mean.
 
+**Frequentist Interpretation** (statement about *the process of creating the interval*):
 
+90% of the time we create an interval using the bootstrap method we used here, the interval will contain the true mean income of married black men in the US. (We hope it did this time, but we're not sure.)
 
 ### 1D)
 
