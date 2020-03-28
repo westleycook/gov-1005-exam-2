@@ -21,6 +21,10 @@ library(Ecdat)
 
 library(infer)
 
+# loading to make a nice table in 2b
+
+library(gt)
+
 ```
 
 ## Question 1: Wrangling Ecdat
@@ -209,5 +213,31 @@ my_cold_call()
 ```
 
 ### 2B)
+
+```{r question_2b, echo=FALSE}
+
+# This r chunk creates the "days" tibble and shows the first four rows of it in
+# a gt table
+
+# Creating the days tibble by assigning the values 1:36 to the day column and
+# using map(rep()) to pass the file name through the my_cold_call() function 36
+# times to create the list column of names for the students column
+
+days <- tibble(day = 1:36,
+               students = map(rep("raw-data/students.csv", 36), my_cold_call))
+
+# Slicing the first four rows of days and passing it through gt() to produce a
+# nice table. then adding title, subtitle, and nice column labels
+
+days %>% 
+  slice(1:4) %>% 
+  gt() %>% 
+  tab_header(title = "Cold Calls",
+             subtitle = "First Four Days of Class") %>% 
+  cols_label(day = "Day",
+             students = "Students")
+
+```
+
 
 
